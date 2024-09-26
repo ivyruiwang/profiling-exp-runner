@@ -1,0 +1,13 @@
+__run_id,__done,input_size,cache,sampling,dram_energy,package_energy,pp0_energy,pp1_energy
+run_0_repetition_0,TODO,1024,DFT,200, , , , 
+run_1_repetition_0,TODO,1024,DFT,1000, , , , 
+run_2_repetition_0,TODO,1024,DFT_cache,200, , , , 
+run_3_repetition_0,TODO,1024,DFT_cache,1000, , , , 
+run_4_repetition_0,TODO,1024,DFT_lru_cache,200, , , , 
+run_5_repetition_0,TODO,1024,DFT_lru_cache,1000, , , , 
+run_6_repetition_0,TODO,4096,DFT,200, , , , 
+run_7_repetition_0,TODO,4096,DFT,1000, , , , 
+run_8_repetition_0,TODO,4096,DFT_cache,200, , , , 
+run_9_repetition_0,TODO,4096,DFT_cache,1000, , , , 
+run_10_repetition_0,TODO,4096,DFT_lru_cache,200, , , , 
+run_11_repetition_0,TODO,4096,DFT_lru_cache,1000, , , , 
