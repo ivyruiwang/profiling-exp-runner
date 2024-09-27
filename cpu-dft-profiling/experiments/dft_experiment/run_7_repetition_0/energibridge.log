@@ -1,2 +1,0 @@
-sampling interval: 1000, target function: DFT, input size: 4096
-Energy consumption in joules: 70.06669967651366 for 1.0305105 sec of execution.
