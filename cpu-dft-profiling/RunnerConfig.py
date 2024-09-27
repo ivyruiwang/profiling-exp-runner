@@ -41,7 +41,7 @@ class RunnerConfig:
     # e.g. Setting some variable based on some criteria
     def __init__(self):
         """Executes immediately after program start, on config load"""
-
+        self.start_time = None
         EventSubscriptionController.subscribe_to_multiple_events([
             (RunnerEvents.BEFORE_EXPERIMENT, self.before_experiment),
             (RunnerEvents.BEFORE_RUN       , self.before_run       ),
@@ -59,12 +59,12 @@ class RunnerConfig:
     def create_run_table_model(self) -> RunTableModel:
         """Create and return the run_table model here. A run_table is a List (rows) of tuples (columns),
         representing each run performed"""
-        sampling_factor = FactorModel("sampling", [200,1000]) # Define different sampling intervals
+        sampling_factor = FactorModel("sampling", [200, 1000]) # Define different sampling intervals
         input_size_factor = FactorModel("input_size", [1024,4096])  # Define different input sizes
         cache_factor = FactorModel("cache", ["DFT", "DFT_cache", "DFT_lru_cache"])  # Different cache strategies
         self.run_table_model = RunTableModel(
             factors=[input_size_factor, cache_factor, sampling_factor],
-            data_columns=['execution_time', 'cpu_usage', 'memory_usage', 'energy_usage']
+            data_columns=['execution_time','average_cpu_usage','memory_usage','dram_energy', 'package_energy', 'pp0_energy', 'pp1_energy']
         )
         return self.run_table_model
 
@@ -83,7 +83,6 @@ class RunnerConfig:
         """Perform any activity required for starting the run here.
         For example, starting the target system to measure.
         Activities after starting the run should also be performed here."""
-        pass
 
 
     def start_measurement(self, context: RunnerContext) -> None:
@@ -93,14 +92,19 @@ class RunnerConfig:
         input_size = context.run_variation['input_size']
         target_function_location = 'cpu.dft'
 
+        self.start_time = time.time()
+
         profiler_cmd = f'''sudo energibridge --interval {sampling_interval} \
-        --max-execution 200 \
+        --max-execution 20 \
         --output {context.run_dir / "energibridge.csv"} \
         --summary \
         python3 -c "import sys; import os; import numpy as np; sys.path.append(os.path.join(os.getcwd(), 'packages')); import {target_function_location} as module; X = tuple(np.random.random({input_size})); module.{target_function}(X)"'''
 
         energibridge_log = open(f'{context.run_dir}/energibridge.log', 'w')
         self.profiler = subprocess.Popen(shlex.split(profiler_cmd), stdout=energibridge_log)
+
+        end_time = time.time()
+        context.run_execution_time = round(end_time - self.start_time, 8)  # Keep the number of seconds of the 8 decimals
 
         energibridge_log.write(f'sampling interval: {sampling_interval}, target function: {target_function}, input size: {input_size}\n')
         energibridge_log.flush()
@@ -140,13 +144,23 @@ class RunnerConfig:
         # energibridge.csv - Power consumption of the whole system
         df = pd.read_csv(context.run_dir / "energibridge.csv")
         run_data = {
+            'memory_usage': round(df.get('USED_MEMORY', pd.Series([0])).sum(), 3),
             'dram_energy': round(df.get('DRAM_ENERGY (J)', pd.Series([0])).sum(), 3),
             'package_energy': round(df.get('PACKAGE_ENERGY (J)', pd.Series([0])).sum(), 3),
             'pp0_energy': round(df.get('PP0_ENERGY (J)', pd.Series([0])).sum(), 3),
             'pp1_energy': round(df.get('PP1_ENERGY (J)', pd.Series([0])).sum(), 3),
         }
 
-        output.console_log(f"Rundata:{run_data}")
+        # Calculate average CPU usage across all cores
+        cpu_columns = [col for col in df.columns if col.startswith('CPU_USAGE_')]
+        if cpu_columns:
+            total_cpu_usage = df[cpu_columns].sum(axis=1)  # Sum up CPU usage of all cores for each row
+            average_cpu_usage = total_cpu_usage.mean()  # Compute the average CPU usage
+            run_data['average_cpu_usage'] = round(average_cpu_usage, 3)
+
+        # Get the execution time
+        run_data['execution_time'] = getattr(context, 'run_execution_time', None)
+
         return run_data
 
     def after_experiment(self) -> None:

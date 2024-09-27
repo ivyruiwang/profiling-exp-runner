@@ -1,2 +1,2 @@
 sampling interval: 200, target function: DFT_lru_cache, input size: 4096
-Energy consumption in joules: 50.79604526901245 for 0.83530533 sec of execution.
+Energy consumption in joules: 75.18502716064452 for 0.835245 sec of execution.
