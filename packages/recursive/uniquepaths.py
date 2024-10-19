@@ -1,11 +1,35 @@
 #AI generated for explorative purposes
 
+<<<<<<< HEAD
 from functools import cache, lru_cache
 #from pyJoules.device.rapl_device import RaplPackageDomain
 #from pyJoules.energy_meter import measure_energy
 
 
 #### Unique Paths ####
+=======
+from functools import cache, lru_cache, wraps
+from time import perf_counter
+
+def timer(func, *args, **kwargs):
+    
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = perf_counter()
+        print(f'Starting {func.__name__} at {start}')   # 1
+        result = func(*args, **kwargs)
+        end = perf_counter()
+        print(f'Finished {func.__name__} at {end}')     # 3
+        print(f"Elapsed time: {end - start}")           # 4
+        return result                                   # 5                
+    return wrapper
+
+@timer
+def measure_time(func: callable, *args, **kwargs):
+    print(f"Calling {func.__name__} with args: {args}")  # 2
+    return func(*args, **kwargs)
+
+>>>>>>> 82983cb (code running on raspberry PI 4)
 
 class UniquePaths:
     
@@ -33,9 +57,21 @@ class UniquePaths:
 if __name__ == '__main__':
     # Example usage
     up = UniquePaths()
+<<<<<<< HEAD
     n = 3
     m = 7
 
     print(up.unique_paths(n, m))
     print(up.unique_paths_cache(n, m))
+=======
+    n = 9
+    m = 9
+
+    print(measure_time(up.unique_paths, n, m))
+    print(measure_time(up.unique_paths_cache, n, m))
+    print(measure_time(up.unique_paths_lru_cache, n, m))
+    
+    assert up.unique_paths(n, m) == up.unique_paths_cache(n, m) == up.unique_paths_lru_cache(n, m)
+
+>>>>>>> 82983cb (code running on raspberry PI 4)
 

@@ -1,5 +1,6 @@
 #AI generated for explorative purposes
 
+<<<<<<< HEAD
 from functools import cache, lru_cache
 #from pyJoules.device.rapl_device import RaplPackageDomain
 #from pyJoules.energy_meter import measure_energy
@@ -7,6 +8,33 @@ from functools import cache, lru_cache
 # Basic Implementation
 #@measure_energy(domains=[RaplPackageDomain(0)])
 def knapsack_basic(weights: list[int], values: list[int], capacity: int) -> int:
+=======
+from functools import cache, lru_cache, wraps
+from time import perf_counter
+
+def timer(func, *args, **kwargs):
+    
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        start = perf_counter()
+        print(f'Starting {func.__name__} at {start}')   # 1
+        result = func(*args, **kwargs)
+        end = perf_counter()
+        print(f'Finished {func.__name__} at {end}')     # 3
+        print(f"Elapsed time: {end - start}")           # 4
+        return result                                   # 5                
+    return wrapper
+
+@timer
+def measure_time(func: callable, *args, **kwargs):
+    print(f"Calling {func.__name__} with args: {args}")  # 2
+    return func(*args, **kwargs)
+
+# Basic Implementation
+def knapsack_basic(weights_tuple: tuple, values_tuple: tuple, capacity: int) -> int:
+    weights = list(weights_tuple)
+    values = list(values_tuple)
+>>>>>>> 82983cb (code running on raspberry PI 4)
     n = len(weights)
     
     def knapsack_recursive(i: int, remaining_capacity: int) -> int:
@@ -21,8 +49,15 @@ def knapsack_basic(weights: list[int], values: list[int], capacity: int) -> int:
     return knapsack_recursive(n - 1, capacity)
 
 # Using functools.cache (Python 3.9+)
+<<<<<<< HEAD
 #@measure_energy(domains=[RaplPackageDomain(0)])
 def knapsack_cache(weights: list[int], values: list[int], capacity: int) -> int:
+=======
+@cache
+def knapsack_cache(weights_tuple: tuple, values_tuple: tuple, capacity: int) -> int:
+    weights = list(weights_tuple)
+    values = list(values_tuple)
+>>>>>>> 82983cb (code running on raspberry PI 4)
     n = len(weights)
     
     @cache
@@ -38,8 +73,15 @@ def knapsack_cache(weights: list[int], values: list[int], capacity: int) -> int:
     return knapsack_recursive(n - 1, capacity)
 
 # Using functools.lru_cache
+<<<<<<< HEAD
 #@measure_energy(domains=[RaplPackageDomain(0)])
 def knapsack_lru_cache(weights: list[int], values: list[int], capacity: int) -> int:
+=======
+@lru_cache(maxsize=None)
+def knapsack_lru_cache(weights_tuple: tuple, values_tuple: tuple, capacity: int) -> int:
+    weights = list(weights_tuple)
+    values = list(values_tuple)
+>>>>>>> 82983cb (code running on raspberry PI 4)
     n = len(weights)
     
     @lru_cache(maxsize=None)
@@ -57,6 +99,7 @@ def knapsack_lru_cache(weights: list[int], values: list[int], capacity: int) -> 
 
 if __name__ == '__main__':
     # Example usage
+<<<<<<< HEAD
     weights = [1, 2, 3, 4]
     values = [10, 20, 30, 40]
     capacity = 5
@@ -64,3 +107,24 @@ if __name__ == '__main__':
     print("Basic Implementation:", knapsack_basic(weights, values, capacity))
     print("Using functools.cache:", knapsack_cache(weights, values, capacity))
     print("Using functools.lru_cache:", knapsack_lru_cache(weights, values, capacity))
+=======
+    weights = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 1, 2, 3]
+    values = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 10, 20, 30]
+    capacity = 5
+    
+    weights_tuple = tuple(weights)
+    values_tuple = tuple(values)
+
+    print("Basic Implementation:", knapsack_basic(weights_tuple, values_tuple, capacity))
+    print(measure_time(knapsack_basic, weights_tuple, values_tuple, capacity))
+    
+    print(measure_time(knapsack_cache, weights_tuple, values_tuple, capacity))
+    print(measure_time(knapsack_cache, weights_tuple, values_tuple, capacity))
+
+    
+    print(measure_time(knapsack_lru_cache, weights_tuple, values_tuple, capacity))
+    print(measure_time(knapsack_lru_cache, weights_tuple, values_tuple, capacity))
+
+    assert knapsack_basic(weights_tuple, values_tuple, capacity) == knapsack_cache(weights_tuple, values_tuple, capacity) == knapsack_lru_cache(weights_tuple, values_tuple, capacity)
+
+>>>>>>> 82983cb (code running on raspberry PI 4)
