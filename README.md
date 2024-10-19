@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Structure
 
 1. Original folders and files from ExperimentRunner's git repo include:
@@ -406,6 +405,3 @@ class RunnerConfig:
 ```python
 python experiment-runner/ profile-<type>-<problem>/RunnerConfig.py
 ```
-
-### 
->>>>>>> 82983cb (code running on raspberry PI 4)
