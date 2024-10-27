@@ -320,5 +320,9 @@ class RunnerConfig:
 ```python
 python experiment-runner/ profile-<type>-<problem>/RunnerConfig.py
 ```
-
+3. Batch run:
+```bash
+chmod +x run_profiling.sh
+./run_profiling.sh
+```
 ### 
