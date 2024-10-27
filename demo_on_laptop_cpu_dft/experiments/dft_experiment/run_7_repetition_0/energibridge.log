@@ -1,2 +1,0 @@
-sampling interval: 200, target function: DFT_cache, input size: 512
-Energy consumption in joules: 9.332874355316163 for 0.2302451 sec of execution.
