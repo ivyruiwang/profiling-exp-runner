@@ -1,0 +1,4 @@
+sampling interval: 50, target function: DFT_lru_cache, input size: 256
+[WARNING] Interval must be at least 200ms to accurately measure CPU usage.
+python_cmd executed successfully
+Energy consumption in joules: 230.2214891204834 for 3.1999595 sec of execution.
