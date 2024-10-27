@@ -1,0 +1,7 @@
+sampling interval: 200, target function: tower_of_hanoi_lru_cache, input size: 15
+first call executed successfully
+first call execution time: 1.7873011529445648e-05 seconds
+second call executed successfully
+second call execution time: 6.789923645555973e-07 seconds
+Total execution time: 4.130799788981676e-05 seconds
+Energy consumption in joules: 8.002375946044921 for 0.2336781 sec of execution.
